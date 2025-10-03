@@ -7,6 +7,7 @@ import { makeSignInController } from "../factories/makeSignInController";
 import { makeListLeadsController } from "../factories/makeListLeadsController";
 import { middlewareAdapter } from "./adapters/middlewareAdapter";
 import { makeAuthenticationMiddleware } from "../factories/makeAuthenticationMiddleware";
+import { prismaClient } from "../application/libs/prismaClient";
 
 const app = express();
 
@@ -20,6 +21,15 @@ app.get(
   "/leads",
   middlewareAdapter(makeAuthenticationMiddleware()),
   routeAdapter(makeListLeadsController())
+);
+
+app.post(
+  "/leads",
+  middlewareAdapter(makeAuthenticationMiddleware()),
+  (req, res) => {
+    console.log(req.metadata?.account?.role);
+    res.json({ created: true });
+  }
 );
 
 app.listen(3001, () =>
